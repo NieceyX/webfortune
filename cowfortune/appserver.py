@@ -9,6 +9,13 @@ import subprocess
 
 app = Flask(__name__)
 app.secret_key = b'REPLACE_ME_x#pi*CO0@^z'
+fileName = "out.txt"
+
+@app.before_first_request
+def app_init():
+    if not (os.path.exists(fileName)):
+        f = open(fileName, "x")
+        f.close()
 
 @app.route('/')
 def index():
@@ -16,24 +23,24 @@ def index():
 
 @app.route('/fortune/')
 def fortune():
-    command = "fortune"
-    p = subprocess.run(command, stdout=subprocess.PIPE)
-    output = str(p.stdout).replace("\\n","<br />").replace("\\t","    ").replace("\\","")
-    return "<pre>" + output[2:-1] + "</pre>"
+    command = "fortune > " + fileName
+    subprocess.call(command, shell=True)
+    with open(fileName) as f: 
+        return "<pre>" + f.read() + "</pre>"
 
 @app.route('/cowsay/<message>/')
 def cowsay(message):
-    command = "cowsay " + message
-    p = subprocess.run(command, stdout=subprocess.PIPE, shell=True)
-    output = str(p.stdout).replace("\\n","<br />").replace("\\t","    ").replace("\\","")
-    return "<pre>" + output[2:-1] + "</pre>"
+    command = "cowsay " + message + " > " + fileName
+    subprocess.call(command, shell=True)
+    with open(fileName) as f: 
+        return "<pre>" + f.read() + "</pre>"
 
 @app.route('/cowfortune/')
 def cowfortune():
-    command = "fortune | cowsay"
-    p = subprocess.run(command, stdout=subprocess.PIPE, shell=True)
-    output = str(p.stdout).replace("\\n","<br />").replace("\\t","    ").replace("\\'","'").replace("\\","")
-    return "<pre>" + output[2:-1] + "</pre>"
+    command = "fortune | cowsay > " + fileName
+    subprocess.call(command, shell=True)
+    with open(fileName) as f: 
+        return "<pre>" + f.read() + "</pre>"
 
 
 
