@@ -1,5 +1,7 @@
 # webfortune
 
+![example branch parameter](https://github.com/NieceyX/webfortune/actions/workflows/python-app.yml/badge.svg?branch=feature-1)
+
 webfortune is a small web application that allows the user to speak to cows.
 
 Going to / or /fortune/ gives the user their fortune.
